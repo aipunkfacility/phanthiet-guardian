@@ -2,6 +2,8 @@
 <img width="1200" height="475" alt="PHAN THIET" src="https://images.unsplash.com/photo-1590547411364-5f43f07a6a42?auto=format&fit=crop&q=80&w=2000" />
 </div>
 
+[![GitHub Repo](https://img.shields.io/badge/GitHub-phanthiet--guardian-blue?style=flat-square&logo=github)](https://github.com/aipunkfacility/phanthiet-guardian)
+
 # Guardian of PHAN THIET
 
 Interactive travel guide for sacred places in Phan Thiet, Vietnam — from Cham towers to fishing villages.
