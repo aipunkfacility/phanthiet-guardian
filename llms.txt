@@ -1,0 +1,18 @@
+# Guardian of PHAN THIET
+
+> Interactive travel guide for Phan Thiet temples in Vietnam.
+
+## Commands
+- [Setup](README.md): npm install
+- [Dev](README.md): npm run dev
+- [Build](README.md): npm run build
+- [Test](README.md): npm run test
+
+## Docs
+- [AGENTS.md](AGENTS.md): Agent guidelines and code style
+- [API](services/gemini.ts): Gemini API integration
+
+## Code
+- [Components](src/components/): React UI components
+- [Types](src/types.ts): TypeScript definitions
+- [Constants](src/constants.ts): Temple data
