@@ -54,7 +54,7 @@ const App: React.FC = () => {
   };
 
   const renderSchedule = () => {
-    let currentTime = new Date();
+    const currentTime = new Date();
     if (context.mode === 'tomorrow') currentTime.setDate(currentTime.getDate() + 1);
     currentTime.setHours(context.startH, context.startM, 0);
 

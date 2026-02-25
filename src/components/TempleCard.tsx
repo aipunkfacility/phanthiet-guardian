@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { Temple } from '../types';
 import AudioGuidePlayer from './AudioGuidePlayer';
+import { savePhotos, getPhotos, compressImage, MAX_PHOTOS, migrateFromLocalStorage } from '../utils/db';
+import { TEMPLES } from '../constants';
 
 interface TempleCardProps {
   temple: Temple;
@@ -27,10 +29,17 @@ const TempleCard: React.FC<TempleCardProps> = ({ temple, onClose, onSave }) => {
   });
   
   useEffect(() => {
-    const saved = localStorage.getItem(`user_photos_${temple.id}`);
-    if (saved) {
-      setUserPhotos(JSON.parse(saved));
-    }
+    const loadPhotos = async () => {
+      try {
+        const templeIds = TEMPLES.map(t => t.id);
+        await migrateFromLocalStorage(templeIds);
+        const photos = await getPhotos(temple.id);
+        setUserPhotos(photos);
+      } catch (err) {
+        console.error('Failed to load photos:', err);
+      }
+    };
+    loadPhotos();
   }, [temple.id]);
 
   const handleSave = () => {
@@ -60,28 +69,34 @@ const TempleCard: React.FC<TempleCardProps> = ({ temple, onClose, onSave }) => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
 
-    Array.from(files).forEach((file: File) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
+    if (userPhotos.length >= MAX_PHOTOS) {
+      alert(`Максимум ${MAX_PHOTOS} фото на храм`);
+      return;
+    }
+
+    for (const file of Array.from(files) as File[]) {
+      if (userPhotos.length >= MAX_PHOTOS) break;
+      try {
+        const base64 = await compressImage(file);
         setUserPhotos(prev => {
-          const updated = [...prev, base64String];
-          localStorage.setItem(`user_photos_${temple.id}`, JSON.stringify(updated));
+          const updated = [...prev, base64];
+          savePhotos(temple.id, updated);
           return updated;
         });
-      };
-      reader.readAsDataURL(file);
-    });
+      } catch (err) {
+        console.error('Compression failed:', err);
+      }
+    }
   };
 
   const removePhoto = (index: number) => {
     const updated = userPhotos.filter((_, i) => i !== index);
     setUserPhotos(updated);
-    localStorage.setItem(`user_photos_${temple.id}`, JSON.stringify(updated));
+    savePhotos(temple.id, updated);
   };
 
   const currentAddress = onSave ? editData.address : temple.location.address;

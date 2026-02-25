@@ -2,8 +2,8 @@
 
 ## 🔴 Критические (Срочно исправить)
 
-- [ ] **Исправить API Key** — `process.env` → `import.meta.env.VITE_GEMINI_API_KEY` в `src/services/gemini.ts`
-- [ ] **Синхронизировать данные ИИ** — обновить `SYSTEM_INSTRUCTION` в `src/services/gemini.ts` (9 → 5 храмов)
+- [ ] **Исправить API Key** — `process.env` → `import.meta.env.VITE_GEMINI_API_KEY` в `src/services/gemini.ts` (пока не актуально)
+- [ ] **Синхронизировать данные ИИ** — обновить `SYSTEM_INSTRUCTION` в `src/services/gemini.ts` (9 → 5 храмов) (будет 9, пока 5)
 
 ---
 
