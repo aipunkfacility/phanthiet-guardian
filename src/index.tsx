@@ -10,10 +10,10 @@ import { exportTemples, importTemples } from './utils/importExport';
 import { Button } from './ui/button';
 import { Card, CardContent, CardTitle, CardDescription } from './ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog';
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from './ui/sheet';
 import { Toaster } from './ui/sonner';
 import { toast } from 'sonner';
 import { Input } from './ui/input';
+import { ArrowRight, X } from 'lucide-react';
 
 const App: React.FC = () => {
   const [temples, setTemples] = useState<Temple[]>(INITIAL_TEMPLES);
@@ -25,17 +25,6 @@ const App: React.FC = () => {
   const [adminPanelOpen, setAdminPanelOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const itineraryRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const saved = localStorage.getItem('custom_temples_data');
-    if (saved) {
-      try {
-        setTemples(JSON.parse(saved));
-      } catch (e) {
-        console.error("Failed to load saved temples", e);
-      }
-    }
-  }, []);
 
   const TRAVEL_GAP = 15;
 
@@ -89,26 +78,26 @@ const App: React.FC = () => {
           currentTime.setMinutes(currentTime.getMinutes() + dur + TRAVEL_GAP);
 
           return (
-            <div key={t.id} className={`flex gap-4 relative transition-all duration-300 ${isClosed ? 'opacity-30' : 'opacity-100'}`}>
+            <div key={t.id} className={`flex gap-4 relative transition-all duration-300 ${isClosed ? 'opacity-40' : 'opacity-100'}`}>
               {idx !== temples.length - 1 && <div className="absolute left-[11px] top-6 bottom-[-24px] w-px bg-stone-200"></div>}
               
-              <div className={`w-6 h-6 rounded-full shrink-0 z-10 border-4 border-white shadow-sm flex items-center justify-center transition-all ${
-                isLunch ? 'bg-amber-400' : 
-                isClosed ? 'bg-stone-800' : 
-                isGolden ? 'bg-indigo-600 scale-110 shadow-indigo-200 shadow-lg' : 'bg-orange-600'
+              <div className={`w-5 h-5 rounded-full shrink-0 z-10 border-3 border-white shadow-sm flex items-center justify-center transition-all ${
+                isLunch ? 'bg-amber-500' : 
+                isClosed ? 'bg-stone-400' : 
+                isGolden ? 'bg-indigo-500 scale-110 shadow-indigo-500/30 shadow-lg' : 'bg-orange-600'
               }`}>
-                {isClosed ? <span className="text-[8px] text-white">🔒</span> : null}
+                {isClosed ? null : <span className="w-2 h-2 bg-white rounded-full"></span>}
               </div>
 
-              <div className="flex-1 min-w-0 pb-2">
+              <div className="flex-1 min-w-0 pb-3">
                 <div className="flex justify-between items-baseline gap-2">
-                  <span className={`text-[10px] font-black tabular-nums ${isGolden ? 'text-indigo-600' : 'text-stone-400'}`}>
+                  <span className={`text-xs font-semibold tabular-nums ${isGolden ? 'text-indigo-500' : 'text-stone-500'}`}>
                     {arrival.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
-                  {isLunch && <span className="text-[8px] font-bold text-amber-600 uppercase">Обед</span>}
-                  {isGolden && <span className="text-[7px] font-black text-indigo-500 uppercase tracking-tighter animate-pulse">Магия ✨</span>}
+                  {isLunch && <span className="text-[10px] font-medium text-amber-600 uppercase">Обед</span>}
+                  {isGolden && <span className="text-[9px] font-semibold text-indigo-500 uppercase tracking-tight">Магия</span>}
                 </div>
-                <h5 className="text-[11px] font-bold text-stone-800 truncate leading-tight mt-0.5">{t.name}</h5>
+                <h5 className={`text-xs font-medium truncate leading-tight mt-0.5 ${isClosed ? 'text-stone-400' : 'text-stone-700'}`}>{t.name}</h5>
               </div>
             </div>
           );
@@ -144,7 +133,6 @@ const App: React.FC = () => {
     try {
       const imported = await importTemples(file);
       setTemples(imported);
-      localStorage.setItem('custom_temples_data', JSON.stringify(imported));
       toast.success('Data imported successfully');
     } catch (err) {
       toast.error('Failed to import data');
@@ -211,21 +199,35 @@ const App: React.FC = () => {
         </DialogContent>
       </Dialog>
 
-      <Sheet open={chatSheetOpen} onOpenChange={setChatSheetOpen}>
-        <SheetTrigger asChild>
-          <Button className="fixed bottom-6 right-6 z-[90] rounded-full w-14 h-14 shadow-2xl">
-            💬
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="right" className="w-full sm:w-[540px] p-0">
-          <SheetHeader className="p-4 border-b">
-            <SheetTitle>AI Гид</SheetTitle>
-          </SheetHeader>
-          <div className="h-[calc(100%-60px)]">
-            <GeminiGuide />
+      <Button 
+        className="fixed bottom-6 right-6 z-[90] rounded-full w-14 h-14 shadow-2xl"
+        onClick={() => setChatSheetOpen(true)}
+      >
+        💬
+      </Button>
+
+      {chatSheetOpen && (
+        <>
+          <div 
+            className="fixed inset-0 z-40 bg-black/50"
+            onClick={() => setChatSheetOpen(false)}
+          />
+          <div className="fixed right-0 top-0 h-full w-full sm:w-[540px] z-50 bg-white flex flex-col">
+            <div className="p-4 border-b flex justify-between items-center">
+              <h2 className="font-semibold text-stone-900">AI Гид</h2>
+              <button 
+                onClick={() => setChatSheetOpen(false)} 
+                className="p-1 hover:bg-stone-100 rounded cursor-pointer"
+              >
+                <X className="w-5 h-5 text-stone-500" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-auto">
+              <GeminiGuide />
+            </div>
           </div>
-        </SheetContent>
-      </Sheet>
+        </>
+      )}
 
       <Toaster />
       {isAdmin && (
@@ -236,10 +238,13 @@ const App: React.FC = () => {
 
       <nav className="fixed top-0 inset-x-0 z-[100] bg-white/90 backdrop-blur-xl border-b border-stone-100 py-4 px-6">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="text-sm font-black italic tracking-tighter text-stone-900 flex items-center gap-2">
+          <button 
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="text-sm font-semibold tracking-tight text-stone-900 flex items-center gap-2 hover:text-orange-600 transition-colors cursor-pointer"
+          >
             <span className="w-2 h-2 bg-orange-600 rounded-full"></span>
-            Guardian of PHAN THIET
-          </div>
+            Храмы Фантьета
+          </button>
           <div className="flex items-center gap-3">
             {isAdmin ? (
               <>
@@ -266,125 +271,139 @@ const App: React.FC = () => {
 
       <header className="relative min-h-[85vh] md:min-h-[90vh] flex flex-col items-center justify-center bg-stone-900 overflow-hidden pt-16 px-6 text-center">
         <img 
-          src="https://images.unsplash.com/photo-1590547411364-5f43f07a6a42?auto=format&fit=crop&q=80&w=2000" 
-          className="absolute inset-0 w-full h-full object-cover opacity-60 scale-105 animate-[slow-zoom_20s_infinite_alternate]" 
+          src="/hero.jpg" 
+          className="absolute inset-0 w-full h-full object-cover opacity-40" 
           alt="Phan Thiet" 
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#FDFCFB] via-stone-900/20 to-stone-900/40"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-900/50 to-stone-900/30"></div>
         
         <div className="relative z-10 w-full max-w-4xl flex flex-col items-center">
-          <p className="text-orange-400 font-bold uppercase tracking-[0.4em] text-[10px] md:text-[11px] mb-4 drop-shadow-lg">{context.label}</p>
-          <h1 className="text-4xl md:text-8xl font-black tracking-tighter mb-4 md:mb-6 leading-[1] text-white drop-shadow-2xl">
+          <span className="text-orange-500 font-semibold uppercase tracking-[0.3em] text-xs md:text-sm mb-6">Phan Thiết</span>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6 text-white">
             {APP_CONFIG.TITLE}
           </h1>
-          <p className="text-sm md:text-2xl italic font-serif text-white/95 mb-8 md:mb-10 max-w-xl mx-auto leading-relaxed drop-shadow-md px-4">
-            "{context.desc}"
+          <p className="text-lg md:text-xl text-stone-300 mb-10 max-w-lg mx-auto leading-relaxed">
+            {context.desc}
           </p>
           <Button 
             onClick={scrollToItinerary}
             size="lg"
-            className="gap-3"
+            className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 rounded-full font-semibold transition-colors cursor-pointer"
           >
-            Построить маршрут
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7"></path></svg>
+            Начать маршрут
           </Button>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-12 -mt-12 md:-mt-16 relative z-20 pb-32">
+      <main className="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-8 md:gap-12 -mt-8 md:-mt-12 relative z-20 pb-32">
         <div className="lg:col-span-3">
-          <div className="bg-white p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl border border-stone-100 sticky top-28">
-            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-stone-400 mb-8 border-b border-stone-50 pb-4">Таймлайн</h3>
+          <div className="glass-card-light p-6 md:p-8 sticky top-28">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500 mb-6 border-b border-stone-200 pb-4">Таймлайн</h3>
             {renderSchedule()}
             
             <button 
               onClick={buildGoogleMapsRoute}
-              className="w-full mt-10 bg-stone-900 text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-orange-600 transition-all shadow-xl active:scale-95"
+              className="w-full mt-8 bg-stone-900 text-white py-3.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 hover:bg-orange-600 transition-colors cursor-pointer"
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-              Маршрут в Google Maps
+              Маршрут
             </button>
 
-            <div className="mt-6 pt-6 border-t border-stone-100">
+            <div className="mt-6 pt-6 border-t border-stone-200">
                <div className="flex items-center gap-3 text-indigo-600">
-                 <span className="text-2xl font-black">17:15</span>
-                 <span className="text-[8px] uppercase font-bold tracking-widest leading-none">Закат в Муйне</span>
+                 <span className="text-xl font-bold">17:15</span>
+                 <span className="text-[10px] uppercase font-medium tracking-wider leading-none">Закат</span>
                </div>
             </div>
           </div>
         </div>
 
-        <div ref={itineraryRef} className="lg:col-span-9 space-y-12">
+        <div ref={itineraryRef} className="lg:col-span-9 space-y-10">
           <div className="grid md:grid-cols-2 gap-8">
             {temples.map((t, i) => (
               <Card 
                 key={t.id}
-                className="overflow-hidden border-stone-50 shadow-sm hover:shadow-2xl transition-all duration-700 cursor-pointer flex flex-col hover:-translate-y-2"
+                className="overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col hover:-translate-y-1 h-full"
                 onClick={() => setSelectedTemple(t)}
               >
-                <div className="h-56 md:h-80 relative overflow-hidden">
-                  <img src={t.imageUrl} alt={t.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[1.5s]" />
-                  <div className="absolute top-4 left-4 md:top-6 md:left-6 px-3 py-1.5 md:px-4 md:py-2 bg-white/90 backdrop-blur-md rounded-full font-black text-stone-900 text-[9px] md:text-[10px] shadow-lg">
-                    Остановка {i + 1}
+                <div className="h-56 md:h-64 relative overflow-hidden">
+                  {t.imageUrl ? (
+                    <img 
+                      src={t.imageUrl} 
+                      alt={t.name} 
+                      className="w-full h-full object-cover transition-transform duration-500"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        target.parentElement!.classList.add('card-placeholder');
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full card-placeholder" />
+                  )}
+                  <div className="absolute top-4 left-4 px-3 py-1.5 bg-white/90 backdrop-blur-sm rounded-full font-semibold text-[10px] text-[#1A1A1A]">
+                    {i + 1}
                   </div>
                   {t.isNightActive && (
-                    <div className="absolute top-4 right-4 md:top-6 md:right-6 px-3 py-1.5 md:px-4 md:py-2 bg-indigo-600 text-white rounded-full font-black text-[8px] md:text-[9px] uppercase tracking-widest shadow-xl animate-pulse">
-                      Магия ✨
+                    <div className="absolute top-4 right-4 px-3 py-1.5 bg-orange-600 text-white rounded-full font-medium text-[9px] uppercase tracking-wide">
+                      Вечером
                     </div>
                   )}
                 </div>
-                <CardContent className="p-7 md:p-10 flex-1 flex flex-col">
-                  <div className="flex justify-between items-center mb-4 md:mb-6">
-                    <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.25em] text-orange-600">{t.culture}</span>
-                    <span className="text-[9px] md:text-[10px] font-bold text-stone-300 tabular-nums">{t.duration}</span>
+                <CardContent className="p-7 flex-1 flex flex-col">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.05em] text-orange-600">{t.culture}</span>
+                    <span className="text-[11px] font-medium text-[#6B7280]">{t.duration}</span>
                   </div>
-                  <CardTitle className="text-xl md:text-3xl font-bold mb-3 md:mb-4 text-stone-900 leading-tight group-hover:text-orange-800 transition-colors">{t.name}</CardTitle>
-                  <CardDescription className="text-stone-500 text-xs md:text-base italic leading-relaxed line-clamp-2 mb-8 md:mb-10 font-serif">{t.description}</CardDescription>
-                  <div className="mt-auto pt-5 md:pt-6 border-t border-stone-50 flex justify-between items-center text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-stone-400 group-hover:text-orange-600 transition-colors">
-                    <span>Подробнее</span>
-                    <svg className="w-4 h-4 md:w-5 md:h-5 transition-transform group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                  <CardTitle className="text-[22px] font-extrabold mb-3 text-[#111827]">{t.name}</CardTitle>
+                  <CardDescription className="text-[#4B5563] text-sm leading-[1.625] line-clamp-3 mb-5 flex-1">{t.description}</CardDescription>
+                  <div className="mt-auto pt-4 border-t border-[#F3F4F6] flex justify-between items-center">
+                    <span className="text-[12px] font-medium text-[#6B7280]">Подробнее</span>
+                    <ArrowRight className="w-4 h-4 text-[#6B7280] ml-2 transition-transform duration-200" />
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
 
-          <section className="bg-stone-900 rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-24 text-white relative overflow-hidden shadow-3xl">
-            <div className="absolute right-0 top-0 w-full md:w-1/2 h-full opacity-20 md:opacity-30 pointer-events-none">
-              <img src="https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover" alt="Culture" />
-            </div>
-            <div className="relative z-10 max-w-xl">
-              <h2 className="text-3xl md:text-6xl font-black mb-6 md:mb-8 tracking-tighter leading-none">Нужен живой рассказ?</h2>
-              <p className="text-stone-400 text-base md:text-xl mb-10 md:mb-12 font-serif italic leading-relaxed">
-                Алгоритмы безупречны, но только профессиональный гид знает историю каждого камня. Посмотрите проверенную экскурсию.
+          <section className="bg-stone-900 rounded-3xl p-8 md:p-16 text-white">
+            <div className="max-w-xl">
+              <h2 className="text-2xl md:text-4xl font-bold mb-4">Нужен живой гид?</h2>
+              <p className="text-stone-400 text-base mb-8 leading-relaxed">
+                Профессиональный гид знает историю каждого камня. Забронируйте экскурсию.
               </p>
               <a 
                 href={APP_CONFIG.TRIPSTER_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block bg-orange-600 px-8 py-4 md:px-12 md:py-6 rounded-full font-bold uppercase tracking-[0.2em] text-[10px] hover:bg-orange-700 transition-all shadow-2xl"
+                className="inline-block bg-orange-600 px-6 py-3 rounded-full font-medium hover:bg-orange-700 transition-colors cursor-pointer"
               >
-                На Tripster
+                Забронировать
               </a>
             </div>
           </section>
         </div>
       </main>
 
-      <footer className="bg-white border-t border-stone-100 py-16 md:py-24 px-10 text-center">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="text-xl md:text-2xl font-black mb-6 italic tracking-tighter uppercase tracking-widest">The Guardian</h2>
-          <p className="text-stone-400 leading-relaxed text-xs md:text-sm mb-10 px-6">
-            Интерактивный путеводитель по культурным кодам города. Создано, чтобы вы не теряли время на закрытые двери и сиесту.
+      <footer className="bg-stone-50 border-t border-stone-200 py-12 px-6 text-center">
+        <div className="max-w-lg mx-auto">
+          <button 
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="text-lg font-semibold mb-4 text-stone-800 hover:text-orange-600 transition-colors cursor-pointer"
+          >
+            Храмы Фантьета
+          </button>
+          <p className="text-stone-500 text-sm mb-6">
+            Интерактивный путеводитель по культурным местам города.
           </p>
           <button 
             onClick={() => {
               setIsAdmin(!isAdmin);
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }} 
-            className={`text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-colors ${isAdmin ? 'text-red-600' : 'text-stone-200 hover:text-stone-900'}`}
+            className={`text-xs font-medium uppercase tracking-wider transition-colors ${isAdmin ? 'text-red-600' : 'text-stone-300 hover:text-stone-600'}`}
           >
-            {isAdmin ? 'Выйти из режима гида' : 'Вход для гида (Admin)'}
+            {isAdmin ? 'Выйти из admin' : 'Admin'}
           </button>
         </div>
       </footer>
@@ -396,19 +415,11 @@ const App: React.FC = () => {
           onSave={isAdmin ? (updated) => {
             const newTemples = temples.map(t => t.id === updated.id ? updated : t);
             setTemples(newTemples);
-            localStorage.setItem('custom_temples_data', JSON.stringify(newTemples));
             setSelectedTemple(updated);
           } : undefined}
         />
       )}
       <GeminiGuide />
-      
-      <style>{`
-        @keyframes slow-zoom {
-          from { transform: scale(1.05); }
-          to { transform: scale(1.15); }
-        }
-      `}</style>
     </div>
   );
 };

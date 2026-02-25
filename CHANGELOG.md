@@ -1,58 +1,65 @@
-# Changelog
+# Changelog — Храмы Фантьета
 
 All notable changes to this project will be documented in this file.
 
 ---
 
-## v1.1.0 - UI & Storage Update
+## v1.2.0 — 25 февраля 2026
 
-### ✨ New Features
+### ✨ Новые функции
 
-- **Admin Mode**: Protected login with password dialog (password: admin123)
-- **AI Chat Sheet**: Gemini AI chat now opens as slide-out panel from right side
-- **Toast Notifications**: Beautiful toast messages for user actions using Sonner
-- **Dialog Components**: shadcn/ui Dialog for admin login modal
+- **Локальные изображения храмов**: Добавлена поддержка локальных фотографий из папки `public/`. Теперь изображения загружаются быстрее.
+- **Экспорт/импорт данных**: Админ может экспортировать и импортировать данные храмов в JSON.
+- **AI Гид**: Чат с Gemini в боковой панели справа.
 
-### 🔧 Improvements
+### 🔧 Улучшения
 
-- **shadcn/ui Integration**: Added modern accessible components
-  - Button, Card, Dialog, Sheet, Sonner
-  - Input, Textarea, Label for forms
-- **Photo Storage**: Migrated from localStorage to IndexedDB
-  - Supports up to 10 photos per temple
-  - Automatic image compression (500KB max)
-  - Web Worker for non-blocking compression
+- **Новый дизайн карточек**: Шрифты Inter (заголовки) и Plus Jakarta Sans (текст), улучшенная иерархия.
+- **Дизайн-система**: CSS-переменные для цветов, стеклянные эффекты (glass-card).
+- **Открытая карточка храма**: Полностью переработан дизайн — новые стили, улучшенная читаемость.
+- **Упрощён код**: Удалён Sheet (Radix UI), убрана зависимость от localStorage для храмов.
 
-### 🐛 Fixes
+### 🐛 Исправления
 
-- Fixed Tailwind v4 integration with Vite
-- Fixed import paths for shadcn components
+- **AI чат**: Исправлена проблема с белой панелью при первом открытии.
+- **Accessibility**: Добавлен aria-describedby для Dialog.
 
-### 📚 Documentation
+### 📚 Документация
 
-- **AGENTS.md**: Updated with shadcn/ui guidelines
-- **llms.txt**: Added UI, lib, utils directories
+- Добавлен PROJECT_SUMMARY.md с полным обзором проекта.
+- Обновлён AGENTS.md с дизайн-токенами и правилами.
+- Обновлён BACKLOG.md с задачами.
 
 ---
 
-## v1.0.0 - Initial Release
+## v1.1.0 — Ранее
 
-### ✨ New Features
+### ✨ Новые функции
 
-- **React Travel Guide App**: Interactive guide for sacred places in Phan Thiet, Vietnam
-- **AI Chat Guide**: Gemini-powered conversational assistant for each temple
-- **Audio Guide Player**: Text-to-speech audio tours using Gemini TTS
-- **Temple Cards**: Beautiful UI components displaying 5 cultural locations
-- **Responsive Design**: Mobile-friendly interface with TailwindCSS
+- **Admin Mode**: Защищённый вход с паролем (password: admin123)
+- **AI Чат**: Gemini AI чат как боковая панель
+- **Toast Уведомления**: Sonner для красивых уведомлений
+- **Dialog Компоненты**: shadcn/ui Dialog для админ-логина
 
-### 🔧 Improvements
+### 🔧 Улучшения
 
-- **Project Structure**: Clean architecture with separate components, services, and tests
-- **Code Quality**: TypeScript strict typing, ESLint, Prettier configured
-- **Testing**: Vitest setup with React Testing Library
+- **shadcn/ui**: Button, Card, Dialog, Sheet, Sonner, Input, Textarea, Label
+- **Хранение фото**: Миграция с localStorage в IndexedDB (до 10 фото, сжатие 500KB)
 
-### 📚 Documentation
+---
 
-- **AGENTS.md**: Comprehensive developer guidelines for AI agents
-- **llms.txt**: Machine-readable documentation index
-- **README.md**: Project setup and usage instructions with GitHub badge
+## v1.0.0 — Старт проекта
+
+### ✨ Новые функции
+
+- **React Travel Guide**: Интерактивный гид по храмам Фантьета
+- **AI Чат Гид**: Gemini-powered помощник
+- **Аудио Гид**: TTS через Gemini
+- **Карточки храмов**: 5 культурных мест
+- **Адаптивный дизайн**: TailwindCSS
+
+### 📚 Документация
+
+- AGENTS.md для разработчиков
+- llms.txt для AI агентов
+- README.md с инструкциями

@@ -1,4 +1,4 @@
-# AGENTS.md — Guardian of PHAN THIET
+# AGENTS.md — Храмы Фантьета
 
 > Context: React 19 | TypeScript | Vite | Gemini API | TailwindCSS | shadcn/ui
 
@@ -103,8 +103,9 @@ describe('Temple', () => {
 - Model: `gemini-3-flash-preview` (chat), `gemini-2.5-flash-preview-tts` (TTS)
 
 ### Data Storage
-- **Photos**: IndexedDB via `src/utils/db.ts` (not localStorage)
-- **Custom temples**: localStorage (`custom_temples_data`)
+- **Photos**: Store in `public/images/` folder, reference as `/filename.jpg`
+- **Temples**: Always use `constants.ts` (INITIAL_TEMPLES) - no localStorage
+- **User photos**: IndexedDB via `src/utils/db.ts`
 - **Compression**: `browser-image-compression` (500KB max per photo)
 
 ### Admin Mode
@@ -116,6 +117,16 @@ describe('Temple', () => {
 - Components in `/src/ui/`
 - Add new: `npx shadcn@latest add <component>`
 - Icons: `lucide-react`
+
+### Design Tokens (index.css)
+- **Semantic colors**: Use CSS variables (`--primary`, `--muted`, etc.) instead of Tailwind defaults
+- **Glass effects**: `.glass-card` and `.glass-card-light` classes available
+- **Typography**: Use rem-based sizing, no hardcoded px values for text
+
+### Fonts
+- **Inter** — headings (via Google Fonts)
+- **Plus Jakarta Sans** — body text (via Google Fonts)
+- Import in `index.html`
 
 ---
 

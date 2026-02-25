@@ -1,8 +1,8 @@
-# Project Summary — Guardian of PHAN THIET
+# Project Summary — Храмы Фантьета
 
 ## 1. Project Overview
 
-**Project Name**: Guardian of PHAN THIET  
+**Project Name**: Храмы Фантьета  
 **Type**: Interactive Travel Guide Web Application  
 **Core Functionality**: Cultural tourism guide for Phan Thiet, Vietnam — interactive temple route planner with AI-powered guide, audio narration, and personal photo album.
 
@@ -24,10 +24,32 @@
 | Formatting | Prettier | 3.3.3 |
 | Image Compression | browser-image-compression | 2.0.2 |
 | Animations | tw-animate-css | 1.4.0 |
+| Fonts | Inter, Plus Jakarta Sans | Google Fonts |
 
 ---
 
-## 3. Directory Structure
+## 3. Design System
+
+### Fonts
+- **Inter** — headings (400, 500, 600, 700, 800 weights)
+- **Plus Jakarta Sans** — body text (400, 500, 600, 700 weights)
+- Loaded via Google Fonts in `index.html`
+
+### Colors (CSS Variables)
+```css
+--primary: #C2410C (orange-700, terracotta)
+--foreground: #1C1917 (stone-900)
+--background: #FDFCFB (warm white)
+--surface-glass: rgba(255, 255, 255, 0.05)
+```
+
+### Components
+- `.glass-card` — dark glass effect
+- `.glass-card-light` — light glass effect
+
+---
+
+## 4. Directory Structure
 
 ```
 /src
@@ -66,10 +88,25 @@
 ├── index.tsx            # Main App component
 └── index.css            # Global styles (Tailwind v4 + shadcn)
 ```
+│
+├── /utils               # Helper functions
+│   ├── db.ts                    # IndexedDB for photo storage
+│   └── importExport.ts          # Export/import temple data
+│
+├── /tests              # Vitest tests
+│   ├── constants.test.ts        # Constants tests
+│   ├── types.test.ts            # Types tests
+│   └── setup.ts                 # Test setup
+│
+├── types.ts             # Global types
+├── constants.ts         # App constants (TEMPLES, APP_CONFIG)
+├── index.tsx            # Main App component
+└── index.css            # Global styles (Tailwind v4 + shadcn)
+```
 
 ---
 
-## 4. Key Configuration Files
+## 5. Key Configuration Files
 
 | File | Purpose |
 |------|---------|
@@ -83,7 +120,7 @@
 
 ---
 
-## 5. Main Components
+## 6. Main Components
 
 ### App (index.tsx)
 Main page layout with:
@@ -114,7 +151,7 @@ Main page layout with:
 
 ---
 
-## 6. API Services
+## 7. API Services
 
 ### Gemini Service (services/gemini.ts)
 
@@ -127,7 +164,7 @@ Main page layout with:
 
 ---
 
-## 7. Utilities
+## 8. Utilities
 
 ### IndexedDB (utils/db.ts)
 
@@ -158,7 +195,7 @@ Main page layout with:
 
 ---
 
-## 8. Data Types (types.ts)
+## 9. Data Types (types.ts)
 
 ```typescript
 enum TempleCulture {
@@ -196,7 +233,7 @@ interface ChatMessage {
 
 ---
 
-## 9. Constants (constants.ts)
+## 10. Constants (constants.ts)
 
 ### TEMPLES
 Array of 5 temples:
@@ -218,7 +255,7 @@ Array of 5 temples:
 
 ---
 
-## 10. Key Features
+## 11. Key Features
 
 - **Adaptive Route**: Calculates schedule based on current time of day
 - **Admin Mode**: Edit temple data (password: `admin123`)
@@ -231,7 +268,7 @@ Array of 5 temples:
 
 ---
 
-## 11. Scripts
+## 12. Scripts
 
 ```bash
 npm run dev           # Dev server (port 3000)
@@ -246,7 +283,7 @@ npm run test:watch   # Watch mode
 
 ---
 
-## 12. Admin Credentials
+## 13. Admin Credentials
 
 - **Password**: `admin123`
 - **Access**: Login button in navigation bar
@@ -254,7 +291,7 @@ npm run test:watch   # Watch mode
 
 ---
 
-## 13. Data Storage
+## 14. Data Storage
 
 | Data Type | Storage Method |
 |-----------|---------------|
