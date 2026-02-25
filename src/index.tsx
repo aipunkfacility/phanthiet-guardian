@@ -6,6 +6,7 @@ import { TEMPLES as INITIAL_TEMPLES, APP_CONFIG } from './constants';
 import { Temple } from './types';
 import TempleCard from './components/TempleCard';
 import GeminiGuide from './components/GeminiGuide';
+import { exportTemples, importTemples } from './utils/importExport';
 import { Button } from './ui/button';
 import { Card, CardContent, CardTitle, CardDescription } from './ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog';
@@ -21,6 +22,8 @@ const App: React.FC = () => {
   const [adminDialogOpen, setAdminDialogOpen] = useState(false);
   const [adminPassword, setAdminPassword] = useState('');
   const [chatSheetOpen, setChatSheetOpen] = useState(false);
+  const [adminPanelOpen, setAdminPanelOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const itineraryRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -129,6 +132,29 @@ const App: React.FC = () => {
     }
   };
 
+  const handleExport = () => {
+    exportTemples(temples);
+    toast.success('Data exported successfully');
+  };
+
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    try {
+      const imported = await importTemples(file);
+      setTemples(imported);
+      localStorage.setItem('custom_temples_data', JSON.stringify(imported));
+      toast.success('Data imported successfully');
+    } catch (err) {
+      toast.error('Failed to import data');
+    }
+    
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#FDFCFB] selection:bg-orange-100 overflow-x-hidden">
       <Dialog open={adminDialogOpen} onOpenChange={setAdminDialogOpen}>
@@ -149,6 +175,38 @@ const App: React.FC = () => {
           <DialogFooter>
             <Button variant="outline" onClick={() => setAdminDialogOpen(false)}>Cancel</Button>
             <Button onClick={handleAdminLogin}>Login</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={adminPanelOpen} onOpenChange={setAdminPanelOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Admin Panel</DialogTitle>
+            <DialogDescription>Manage your temple data</DialogDescription>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            <div className="flex flex-col gap-3">
+              <Button onClick={handleExport} className="w-full">
+                📥 Export Data
+              </Button>
+              <input
+                type="file"
+                ref={fileInputRef}
+                accept=".json"
+                onChange={handleImport}
+                className="hidden"
+              />
+              <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="w-full">
+                📤 Import Data
+              </Button>
+            </div>
+            <p className="text-xs text-stone-400 text-center">
+              Exported data includes all temple information and customizations
+            </p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAdminPanelOpen(false)}>Close</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -183,9 +241,20 @@ const App: React.FC = () => {
             Guardian of PHAN THIET
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" onClick={() => setAdminDialogOpen(true)}>
-              {isAdmin ? 'Admin' : 'Login'}
-            </Button>
+            {isAdmin ? (
+              <>
+                <Button variant="outline" size="sm" onClick={() => setAdminPanelOpen(true)}>
+                  ⚙️ Admin
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => setIsAdmin(false)}>
+                  Выйти
+                </Button>
+              </>
+            ) : (
+              <Button variant="ghost" size="sm" onClick={() => setAdminDialogOpen(true)}>
+                Login
+              </Button>
+            )}
             <Button asChild>
               <a href={APP_CONFIG.TRIPSTER_URL} target="_blank" rel="noopener noreferrer">
                 Экскурсия
