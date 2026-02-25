@@ -6,11 +6,10 @@ import { savePhotos, getPhotos, compressImage, MAX_PHOTOS, migrateFromLocalStora
 import { TEMPLES } from '../constants';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Dialog, DialogContent } from '../ui/dialog';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { Label } from '../ui/label';
-import { X, MapPin, Clock, Camera, Trash2, Play, Pause } from 'lucide-react';
+import { X } from 'lucide-react';
 
 interface TempleCardProps {
   temple: Temple;
@@ -158,74 +157,78 @@ const TempleCard: React.FC<TempleCardProps> = ({ temple, onClose, onSave }) => {
             
             <div className="p-6 md:p-8 space-y-6 flex-1">
               {onSave ? (
-                <section className="bg-white p-5 rounded-2xl border border-red-100 shadow-sm space-y-4">
-                  <h4 className="text-[10px] font-black uppercase text-red-600 tracking-widest">Таймлайн</h4>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <label className="text-[9px] uppercase font-bold text-stone-400">Открытие</label>
-                      <input type="text" className="w-full bg-stone-50 p-2 rounded border text-xs" value={editData.openTime} onChange={(e) => setEditData({...editData, openTime: e.target.value})} />
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-xs font-black uppercase text-red-600 tracking-widest">Таймлайн</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-[9px] uppercase font-bold text-stone-400">Открытие</Label>
+                        <Input type="text" value={editData.openTime} onChange={(e) => setEditData({...editData, openTime: e.target.value})} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-[9px] uppercase font-bold text-stone-400">Закрытие</Label>
+                        <Input type="text" value={editData.closeTime} onChange={(e) => setEditData({...editData, closeTime: e.target.value})} />
+                      </div>
                     </div>
-                    <div className="space-y-1">
-                      <label className="text-[9px] uppercase font-bold text-stone-400">Закрытие</label>
-                      <input type="text" className="w-full bg-stone-50 p-2 rounded border text-xs" value={editData.closeTime} onChange={(e) => setEditData({...editData, closeTime: e.target.value})} />
+
+                    <div className="space-y-2">
+                      <Label className="text-[9px] uppercase font-bold text-stone-400">Длительность</Label>
+                      <Input type="text" value={editData.duration} onChange={(e) => setEditData({...editData, duration: e.target.value})} />
                     </div>
-                  </div>
 
-                  <div className="space-y-1">
-                    <label className="text-[9px] uppercase font-bold text-stone-400">Длительность</label>
-                    <input type="text" className="w-full bg-stone-50 p-2 rounded border text-xs" value={editData.duration} onChange={(e) => setEditData({...editData, duration: e.target.value})} />
-                  </div>
-
-                  <div className="flex flex-col gap-2 pt-2">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" checked={editData.hasLunchBreak} onChange={(e) => setEditData({...editData, hasLunchBreak: e.target.checked})} className="rounded text-red-600" />
-                      <span className="text-[10px] font-bold text-stone-600">Обед</span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" checked={editData.isNightActive} onChange={(e) => setEditData({...editData, isNightActive: e.target.checked})} className="rounded text-red-600" />
-                      <span className="text-[10px] font-bold text-stone-600">Красиво вечером</span>
-                    </label>
-                  </div>
-                </section>
+                    <div className="flex flex-col gap-2 pt-2">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" checked={editData.hasLunchBreak} onChange={(e) => setEditData({...editData, hasLunchBreak: e.target.checked})} className="rounded text-red-600" />
+                        <span className="text-[10px] font-bold text-stone-600">Обед</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" checked={editData.isNightActive} onChange={(e) => setEditData({...editData, isNightActive: e.target.checked})} className="rounded text-red-600" />
+                        <span className="text-[10px] font-bold text-stone-600">Красиво вечером</span>
+                      </label>
+                    </div>
+                  </CardContent>
+                </Card>
               ) : (
                 <div className="bg-stone-900 rounded-2xl overflow-hidden shadow-xl border border-white/5">
                   <AudioGuidePlayer title="Слушать Хранителя" text={temple.audioScript} />
                 </div>
               )}
 
-              <section className="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-4">
-                <div className="flex justify-between items-center">
-                  <h4 className="text-[10px] font-bold uppercase text-stone-400 tracking-widest">Локация</h4>
-                  <button onClick={copyToClipboard} className="text-[9px] font-black text-orange-600 uppercase hover:underline">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-[10px] font-bold uppercase text-stone-400 tracking-widest">Локация</CardTitle>
+                  <Button variant="ghost" size="sm" onClick={copyToClipboard} className="text-[9px] font-black text-orange-600 uppercase h-auto p-0">
                     {copied ? 'Готово' : 'Копировать'}
-                  </button>
-                </div>
-
-                {onSave ? (
-                  <div className="space-y-3">
-                    <textarea 
-                      className="w-full bg-stone-100 p-3 rounded-lg text-xs font-medium focus:ring-1 focus:ring-red-500 outline-none h-16 resize-none"
-                      value={editData.address}
-                      onChange={(e) => setEditData({...editData, address: e.target.value})}
-                    />
-                    <div className="space-y-1">
-                      <label className="text-[9px] uppercase font-bold text-stone-400">Фото (URL)</label>
-                      <input type="text" className="w-full bg-stone-50 p-2 rounded border text-[10px]" value={editData.imageUrl} onChange={(e) => setEditData({...editData, imageUrl: e.target.value})} />
+                  </Button>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {onSave ? (
+                    <div className="space-y-3">
+                      <Textarea 
+                        className="resize-none"
+                        value={editData.address}
+                        onChange={(e) => setEditData({...editData, address: e.target.value})}
+                      />
+                      <div className="space-y-2">
+                        <Label className="text-[9px] uppercase font-bold text-stone-400">Фото (URL)</Label>
+                        <Input type="text" value={editData.imageUrl} onChange={(e) => setEditData({...editData, imageUrl: e.target.value})} />
+                      </div>
+                      <Button onClick={handleSave} className="w-full">
+                        Сохранить изменения
+                      </Button>
                     </div>
-                    <button onClick={handleSave} className="w-full bg-stone-900 text-white py-3.5 rounded-xl font-bold hover:bg-orange-600 transition-all shadow-lg text-[10px] uppercase tracking-widest">
-                      Сохранить изменения
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <p className="text-xs md:text-sm text-stone-700 font-medium leading-snug">{temple.location.address}</p>
-                    <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="w-full flex justify-center items-center gap-3 bg-stone-900 text-white px-6 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-orange-600 transition-all shadow-lg">
-                      Открыть в Картах
-                    </a>
-                  </>
-                )}
-              </section>
+                  ) : (
+                    <>
+                      <p className="text-xs md:text-sm text-stone-700 font-medium leading-snug">{temple.location.address}</p>
+                      <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="w-full flex justify-center items-center gap-3 bg-stone-900 text-white px-6 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-orange-600 transition-all shadow-lg">
+                        Открыть в Картах
+                      </a>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
             </div>
           </div>
 
