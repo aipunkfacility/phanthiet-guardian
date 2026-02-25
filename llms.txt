@@ -7,12 +7,15 @@
 - [Dev](README.md): npm run dev
 - [Build](README.md): npm run build
 - [Test](README.md): npm run test
+- [Lint](README.md): npm run lint
 
 ## Docs
 - [AGENTS.md](AGENTS.md): Agent guidelines and code style
-- [API](services/gemini.ts): Gemini API integration
 
 ## Code
 - [Components](src/components/): React UI components
+- [UI](src/ui/): shadcn/ui components (Button, Card, Dialog, Sheet, Sonner)
 - [Types](src/types.ts): TypeScript definitions
 - [Constants](src/constants.ts): Temple data
+- [Services](src/services/): Gemini API integration
+- [Utils](src/utils/): IndexedDB helpers (db.ts)
