@@ -7,6 +7,7 @@ import { Temple } from './types';
 import TempleCard from './components/TempleCard';
 import GeminiGuide from './components/GeminiGuide';
 import { Button } from './ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card';
 
 const App: React.FC = () => {
   const [temples, setTemples] = useState<Temple[]>(INITIAL_TEMPLES);
@@ -184,10 +185,10 @@ const App: React.FC = () => {
         <div ref={itineraryRef} className="lg:col-span-9 space-y-12">
           <div className="grid md:grid-cols-2 gap-8">
             {temples.map((t, i) => (
-              <div 
+              <Card 
                 key={t.id}
+                className="overflow-hidden border-stone-50 shadow-sm hover:shadow-2xl transition-all duration-700 cursor-pointer flex flex-col hover:-translate-y-2"
                 onClick={() => setSelectedTemple(t)}
-                className="group bg-white rounded-[2.5rem] md:rounded-[3rem] overflow-hidden border border-stone-50 shadow-sm hover:shadow-2xl transition-all duration-700 cursor-pointer flex flex-col hover:-translate-y-2"
               >
                 <div className="h-56 md:h-80 relative overflow-hidden">
                   <img src={t.imageUrl} alt={t.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[1.5s]" />
@@ -200,19 +201,19 @@ const App: React.FC = () => {
                     </div>
                   )}
                 </div>
-                <div className="p-7 md:p-10 flex-1 flex flex-col">
+                <CardContent className="p-7 md:p-10 flex-1 flex flex-col">
                   <div className="flex justify-between items-center mb-4 md:mb-6">
                     <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.25em] text-orange-600">{t.culture}</span>
                     <span className="text-[9px] md:text-[10px] font-bold text-stone-300 tabular-nums">{t.duration}</span>
                   </div>
-                  <h3 className="text-xl md:text-3xl font-bold mb-3 md:mb-4 text-stone-900 leading-tight group-hover:text-orange-800 transition-colors">{t.name}</h3>
-                  <p className="text-stone-500 text-xs md:text-base italic leading-relaxed line-clamp-2 mb-8 md:mb-10 font-serif">{t.description}</p>
+                  <CardTitle className="text-xl md:text-3xl font-bold mb-3 md:mb-4 text-stone-900 leading-tight group-hover:text-orange-800 transition-colors">{t.name}</CardTitle>
+                  <CardDescription className="text-stone-500 text-xs md:text-base italic leading-relaxed line-clamp-2 mb-8 md:mb-10 font-serif">{t.description}</CardDescription>
                   <div className="mt-auto pt-5 md:pt-6 border-t border-stone-50 flex justify-between items-center text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-stone-400 group-hover:text-orange-600 transition-colors">
                     <span>Подробнее</span>
                     <svg className="w-4 h-4 md:w-5 md:h-5 transition-transform group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                   </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
 
