@@ -116,3 +116,10 @@ describe('Temple', () => {
 - Components in `/src/ui/`
 - Add new: `npx shadcn@latest add <component>`
 - Icons: `lucide-react`
+
+---
+
+## Documentation
+
+- [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md) — Full project documentation (types, API, features, data storage)
+- [BACKLOG.md](BACKLOG.md) — Tasks backlog and feature requests
