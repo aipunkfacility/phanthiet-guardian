@@ -5,11 +5,12 @@ import AudioGuidePlayer from './AudioGuidePlayer';
 import { savePhotos, getPhotos, compressImage, MAX_PHOTOS, migrateFromLocalStorage } from '../utils/db';
 import { TEMPLES } from '../constants';
 import { Button } from '../ui/button';
-import { Card, CardContent } from '../ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Dialog, DialogContent } from '../ui/dialog';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { Label } from '../ui/label';
+import { X, MapPin, Clock, Camera, Trash2, Play, Pause } from 'lucide-react';
 
 interface TempleCardProps {
   temple: Temple;
@@ -110,14 +111,15 @@ const TempleCard: React.FC<TempleCardProps> = ({ temple, onClose, onSave }) => {
 
   return (
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-0 md:p-4 bg-black/90 backdrop-blur-xl">
-      {/* Fixed Close Button Layer */}
-      <button 
+      <Button 
+        variant="ghost" 
+        size="icon"
         onClick={onClose}
-        className="absolute top-4 right-4 md:top-8 md:right-8 z-[170] p-3.5 bg-white/10 backdrop-blur-md hover:bg-white/20 rounded-full transition-all shadow-2xl border border-white/20 text-white"
+        className="absolute top-4 right-4 md:top-8 md:right-8 z-[170] text-white hover:bg-white/20"
         aria-label="Close"
       >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
-      </button>
+        <X className="w-6 h-6" />
+      </Button>
 
       <div className="bg-white w-full h-full md:max-w-6xl md:h-auto md:max-h-[92vh] overflow-y-auto md:rounded-[2.5rem] shadow-2xl relative custom-scrollbar overflow-x-hidden">
         
@@ -141,9 +143,9 @@ const TempleCard: React.FC<TempleCardProps> = ({ temple, onClose, onSave }) => {
                 </span>
                 {onSave ? (
                   <div className="space-y-2">
-                    <input 
+                    <Input 
                       placeholder="Название"
-                      className="block w-full bg-white/10 border-b border-white/30 text-xl font-bold focus:outline-none focus:border-white placeholder:text-white/30 p-1"
+                      className="bg-white/10 border-white/30 text-xl font-bold text-white placeholder:text-white/30"
                       value={editData.name}
                       onChange={(e) => setEditData({...editData, name: e.target.value})}
                     />
