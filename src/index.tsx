@@ -6,6 +6,7 @@ import { TEMPLES as INITIAL_TEMPLES, APP_CONFIG } from './constants';
 import { Temple } from './types';
 import TempleCard from './components/TempleCard';
 import GeminiGuide from './components/GeminiGuide';
+import { Button } from './ui/button';
 
 const App: React.FC = () => {
   const [temples, setTemples] = useState<Temple[]>(INITIAL_TEMPLES);
@@ -122,14 +123,11 @@ const App: React.FC = () => {
             <span className="w-2 h-2 bg-orange-600 rounded-full"></span>
             Guardian of PHAN THIET
           </div>
-          <a 
-            href={APP_CONFIG.TRIPSTER_URL} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="text-[10px] font-black uppercase tracking-widest bg-orange-600 text-white px-5 py-2 rounded-full hover:bg-orange-700 transition-all shadow-lg active:scale-95 sm:px-6 sm:py-2.5"
-          >
-            Экскурсия
-          </a>
+          <Button asChild>
+            <a href={APP_CONFIG.TRIPSTER_URL} target="_blank" rel="noopener noreferrer">
+              Экскурсия
+            </a>
+          </Button>
         </div>
       </nav>
 
@@ -149,13 +147,14 @@ const App: React.FC = () => {
           <p className="text-sm md:text-2xl italic font-serif text-white/95 mb-8 md:mb-10 max-w-xl mx-auto leading-relaxed drop-shadow-md px-4">
             "{context.desc}"
           </p>
-          <button 
+          <Button 
             onClick={scrollToItinerary}
-            className="inline-flex items-center gap-3 bg-orange-600 text-white px-8 py-4 md:px-10 md:py-5 rounded-full font-bold uppercase tracking-widest text-[10px] md:text-[13px] hover:bg-orange-700 transition-all shadow-[0_20px_50px_rgba(234,88,12,0.4)] active:scale-95 hover:scale-105"
+            size="lg"
+            className="gap-3"
           >
             Построить маршрут
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7"></path></svg>
-          </button>
+          </Button>
         </div>
       </header>
 
