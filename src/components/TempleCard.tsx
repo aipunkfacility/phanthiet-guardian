@@ -4,6 +4,12 @@ import { Temple } from '../types';
 import AudioGuidePlayer from './AudioGuidePlayer';
 import { savePhotos, getPhotos, compressImage, MAX_PHOTOS, migrateFromLocalStorage } from '../utils/db';
 import { TEMPLES } from '../constants';
+import { Button } from '../ui/button';
+import { Card, CardContent } from '../ui/card';
+import { Dialog, DialogContent } from '../ui/dialog';
+import { Input } from '../ui/input';
+import { Textarea } from '../ui/textarea';
+import { Label } from '../ui/label';
 
 interface TempleCardProps {
   temple: Temple;

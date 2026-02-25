@@ -1,6 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
+import './index.css';
 import { TEMPLES as INITIAL_TEMPLES, APP_CONFIG } from './constants';
 import { Temple } from './types';
 import TempleCard from './components/TempleCard';
