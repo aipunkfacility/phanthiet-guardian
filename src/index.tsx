@@ -7,12 +7,20 @@ import { Temple } from './types';
 import TempleCard from './components/TempleCard';
 import GeminiGuide from './components/GeminiGuide';
 import { Button } from './ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card';
+import { Card, CardContent, CardTitle, CardDescription } from './ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog';
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from './ui/sheet';
+import { Toaster } from './ui/sonner';
+import { toast } from 'sonner';
+import { Input } from './ui/input';
 
 const App: React.FC = () => {
   const [temples, setTemples] = useState<Temple[]>(INITIAL_TEMPLES);
   const [selectedTemple, setSelectedTemple] = useState<Temple | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [adminDialogOpen, setAdminDialogOpen] = useState(false);
+  const [adminPassword, setAdminPassword] = useState('');
+  const [chatSheetOpen, setChatSheetOpen] = useState(false);
   const itineraryRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -110,8 +118,58 @@ const App: React.FC = () => {
     itineraryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
+  const handleAdminLogin = () => {
+    if (adminPassword === 'admin123') {
+      setIsAdmin(true);
+      setAdminDialogOpen(false);
+      setAdminPassword('');
+      toast.success('Admin mode activated');
+    } else {
+      toast.error('Invalid password');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#FDFCFB] selection:bg-orange-100 overflow-x-hidden">
+      <Dialog open={adminDialogOpen} onOpenChange={setAdminDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Admin Mode</DialogTitle>
+            <DialogDescription>Enter password to enable editing</DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <Input 
+              type="password" 
+              placeholder="Password" 
+              value={adminPassword}
+              onChange={(e) => setAdminPassword(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleAdminLogin()}
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAdminDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleAdminLogin}>Login</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Sheet open={chatSheetOpen} onOpenChange={setChatSheetOpen}>
+        <SheetTrigger asChild>
+          <Button className="fixed bottom-6 right-6 z-[90] rounded-full w-14 h-14 shadow-2xl">
+            💬
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="right" className="w-full sm:w-[540px] p-0">
+          <SheetHeader className="p-4 border-b">
+            <SheetTitle>AI Гид</SheetTitle>
+          </SheetHeader>
+          <div className="h-[calc(100%-60px)]">
+            <GeminiGuide />
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      <Toaster />
       {isAdmin && (
         <div className="fixed top-24 left-6 z-[110] bg-red-600 text-white text-[9px] font-black uppercase tracking-[0.3em] px-4 py-2 rounded-full shadow-2xl animate-bounce">
           Admin Mode Active
@@ -124,11 +182,16 @@ const App: React.FC = () => {
             <span className="w-2 h-2 bg-orange-600 rounded-full"></span>
             Guardian of PHAN THIET
           </div>
-          <Button asChild>
-            <a href={APP_CONFIG.TRIPSTER_URL} target="_blank" rel="noopener noreferrer">
-              Экскурсия
-            </a>
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="sm" onClick={() => setAdminDialogOpen(true)}>
+              {isAdmin ? 'Admin' : 'Login'}
+            </Button>
+            <Button asChild>
+              <a href={APP_CONFIG.TRIPSTER_URL} target="_blank" rel="noopener noreferrer">
+                Экскурсия
+              </a>
+            </Button>
+          </div>
         </div>
       </nav>
 
