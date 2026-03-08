@@ -17,7 +17,7 @@ interface TempleCardProps {
   onSave?: (updated: Temple) => void;
 }
 
-const TempleCard: React.FC<TempleCardProps> = ({ temple, onClose, onSave }) => {
+const TempleCard = ({ temple, onClose, onSave }: TempleCardProps) => {
   const [userPhotos, setUserPhotos] = useState<string[]>([]);
   const [copied, setCopied] = useState(false);
   const [newImage, setNewImage] = useState<string | null>(null);
