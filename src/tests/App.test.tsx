@@ -1,20 +1,22 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import App from '../index';
-import * as importExportModule from '../utils/importExport';
-import * as dbModule from '../utils/db';
+import App from '../App';
 
-vi.mock('../utils/importExport', () => ({
-  exportTemples: vi.fn(),
-  importTemples: vi.fn(),
+vi.mock('../hooks/useTempleData', () => ({
+  useTempleData: () => ({
+    temples: [],
+    addTemple: vi.fn(),
+    updateTemple: vi.fn(),
+    deleteTemple: vi.fn(),
+  }),
 }));
 
-vi.mock('../utils/db', () => ({
-  migrateFromLocalStorage: vi.fn(),
-}));
-
-vi.mock('../services/gemini', () => ({
-  getGeminiGuideResponse: vi.fn(),
+vi.mock('../hooks/useAdmin', () => ({
+  useAdmin: () => ({
+    isAdmin: false,
+    login: vi.fn(),
+    logout: vi.fn(),
+  }),
 }));
 
 describe('App', () => {

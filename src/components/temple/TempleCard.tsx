@@ -22,11 +22,6 @@ export function TempleCard({ temple, onClose, onSave }: TempleCardProps) {
     setIsEditing(false);
   };
 
-  const handleEditCancel = () => {
-    setIsEditing(false);
-    setNewImage(null);
-  };
-
   return (
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-0 md:p-4 bg-black/90 backdrop-blur-xl">
       <Button 
@@ -48,7 +43,6 @@ export function TempleCard({ temple, onClose, onSave }: TempleCardProps) {
                 newImage={newImage}
                 onImageChange={setNewImage}
                 onSave={handleSave}
-                onCancel={handleEditCancel}
               />
             ) : (
               <TempleCardView

@@ -7,7 +7,6 @@ interface AudioGuidePlayerProps {
 
 const AudioGuidePlayer: React.FC<AudioGuidePlayerProps> = ({ text, title }) => {
   const { 
-    status, 
     playText, 
     togglePlayback, 
     error,

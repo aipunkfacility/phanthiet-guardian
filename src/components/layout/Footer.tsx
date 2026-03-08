@@ -6,8 +6,6 @@ interface FooterProps {
 }
 
 export function Footer({ isAdmin, onAdminToggle }: FooterProps) {
-  const currentYear = new Date().getFullYear();
-
   return (
     <footer className="bg-stone-50 border-t border-stone-200 py-12 px-6 text-center">
       <div className="max-w-lg mx-auto">

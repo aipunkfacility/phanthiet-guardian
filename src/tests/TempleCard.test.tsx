@@ -1,10 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import TempleCard from '@/components/TempleCard';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { TempleCard } from '@/components/temple/TempleCard';
 import { mockTemple } from '@/tests/mocks/data';
-import * as dbModule from '@/utils/db';
 
-// Мокаем зависимости
 vi.mock('../../utils/db', () => ({
   savePhotos: vi.fn(),
   getPhotos: vi.fn().mockResolvedValue([]),
@@ -19,7 +17,6 @@ vi.mock('../../constants', () => ({
 
 describe('TempleCard', () => {
   const mockOnClose = vi.fn();
-  const mockOnSave = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();

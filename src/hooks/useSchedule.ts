@@ -5,7 +5,6 @@ import { calculateSchedule, getPlanContext, formatTime } from '@/utils/scheduleC
 export type { PlanContext, ScheduleItem };
 
 export function useSchedule(temples: Temple[]) {
-  const [currentTime, setCurrentTime] = useState(new Date());
   const [context, setContext] = useState(getPlanContext());
   const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
 
@@ -47,7 +46,7 @@ export function useSchedule(temples: Temple[]) {
     };
   }, [schedule]);
 
-  const isTempleOpen = useCallback((temple: Temple, time: Date) => {
+  const isTempleOpen = useCallback((time: Date) => {
     // Упрощенная логика: открыто с 8:00 до 18:00
     const hour = time.getHours();
     return hour >= 8 && hour < 18;

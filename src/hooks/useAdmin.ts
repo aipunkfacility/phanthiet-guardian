@@ -41,7 +41,6 @@ export function useAdmin() {
 
 export function useAdminMode() {
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const toggleAdmin = useCallback(() => {
     setIsAdmin(prev => !prev);
@@ -49,7 +48,6 @@ export function useAdminMode() {
 
   return {
     isAdmin,
-    isAuthenticated,
     toggleAdmin,
   };
 }

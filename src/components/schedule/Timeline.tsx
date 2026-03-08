@@ -20,7 +20,6 @@ export function Timeline({ schedule }: TimelineProps) {
 
 function TimelineItem({ item, index }: { item: ScheduleItem; index: number }) {
   const arrivalTime = formatTime(item.arrivalTime);
-  const duration = parseInt(item.temple.duration) || 30;
   
   const arrivalDec = item.arrivalTime.getHours() + item.arrivalTime.getMinutes() / 60;
   const openH = item.temple.openTime ? parseFloat(item.temple.openTime.split(':')[0]) + parseFloat(item.temple.openTime.split(':')[1])/60 : 7.5;

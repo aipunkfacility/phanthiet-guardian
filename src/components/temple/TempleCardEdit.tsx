@@ -11,15 +11,13 @@ interface TempleCardEditProps {
   newImage?: string | null;
   onImageChange: (image: string | null) => void;
   onSave: (temple: Temple) => void;
-  onCancel: () => void;
 }
 
 export function TempleCardEdit({ 
   temple, 
   newImage, 
   onImageChange, 
-  onSave, 
-  onCancel 
+  onSave 
 }: TempleCardEditProps) {
   const [editData, setEditData] = useState({
     address: temple.location.address,
