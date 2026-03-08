@@ -31,6 +31,7 @@ Get key: https://aistudio.google.com/app/apikey
 | `npm run dev` | Dev server (port 3000) |
 | `npm run build` | Production build |
 | `npm run lint` | ESLint check |
+| `npm run typecheck` | TypeScript check |
 | `npm run test` | Run tests |
 
 ## Tech Stack
@@ -39,20 +40,35 @@ Get key: https://aistudio.google.com/app/apikey
 - Vite
 - Google Gemini API
 - TailwindCSS
+- shadcn/ui
 
 ## Project Structure
 
 ```
 /src
-  /components    # React components
-  /services      # API (Gemini)
-  /tests        # Vitest tests
-  types.ts      # TypeScript types
-  constants.ts  # Temple data
-  index.tsx    # Entry point
+  /components
+    /layout      # Navbar, Header, Footer, FloatingButtons
+    /schedule    # Schedule, Timeline, SunsetIndicator
+    /admin       # AdminLoginDialog, AdminPanel
+    /temple      # TempleCard, TempleCardView, TempleCardEdit, TempleGallery
+  /hooks         # useTempleData, useAdmin, useSchedule, usePhotos, useGemini, useAudio
+  /services      # Gemini API client
+  /utils         # db, scheduleCalculations, audioDecoder, formatters
+  /ui            # shadcn/ui components
+  types.ts       # TypeScript types
+  constants.ts   # Temple data
+  App.tsx        # Main component
+  index.tsx      # Entry point
 ```
 
 ## API
 
 - Chat: `gemini-3-flash-preview`
 - TTS: `gemini-2.5-flash-preview-tts`
+
+## Documentation
+
+- [CHANGELOG.md](CHANGELOG.md) — Version history
+- [AGENTS.md](AGENTS.md) — Developer guidelines
+- [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md) — Full project documentation
+- [BACKLOG.md](BACKLOG.md) — Tasks backlog
