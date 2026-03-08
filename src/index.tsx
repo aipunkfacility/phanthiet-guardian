@@ -1,5 +1,5 @@
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { TEMPLES as INITIAL_TEMPLES, APP_CONFIG } from './constants';
@@ -111,8 +111,8 @@ const App: React.FC = () => {
   };
 
   const handleAdminLogin = () => {
-    const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
-    if (adminPassword === 'admin123') {
+    const correctPassword = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
+    if (adminPassword === correctPassword) {
       setIsAdmin(true);
       setAdminDialogOpen(false);
       setAdminPassword('');
@@ -413,11 +413,11 @@ const App: React.FC = () => {
         <TempleCard 
           temple={selectedTemple} 
           onClose={() => setSelectedTemple(null)}
-          onSave={isAdmin ? (updated) => {
+          {...(isAdmin ? { onSave: (updated) => {
             const newTemples = temples.map(t => t.id === updated.id ? updated : t);
             setTemples(newTemples);
             setSelectedTemple(updated);
-          } : undefined}
+          }} : {})}
         />
       )}
       <GeminiGuide />

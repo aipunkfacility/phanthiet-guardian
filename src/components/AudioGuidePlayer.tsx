@@ -38,43 +38,43 @@ const AudioGuidePlayer: React.FC<AudioGuidePlayerProps> = ({ text, title }) => {
     return buffer;
   };
 
-  const handlePlay = async () => {
-    if (status === 'playing') {
-      sourceRef.current?.stop();
-      offsetRef.current += audioContextRef.current!.currentTime - startTimeRef.current;
-      setStatus('paused');
-      return;
-    }
+   const handlePlay = async () => {
+     if (status === 'playing') {
+       sourceRef.current?.stop();
+       offsetRef.current += audioContextRef.current!.currentTime - startTimeRef.current;
+       setStatus('paused');
+       return;
+     }
 
-    if (status === 'paused' && audioBufferRef.current) {
-      playBuffer(audioBufferRef.current, offsetRef.current);
-      return;
-    }
+     if (status === 'paused' && audioBufferRef.current) {
+       playBuffer(audioBufferRef.current, offsetRef.current);
+       return;
+     }
 
-    setStatus('loading');
-    setError(null);
+     setStatus('loading');
+     setError(null);
 
-    const base64 = await generateAudio(text);
-    if (!base64) {
-      setError('Ошибка генерации');
-      setStatus('idle');
-      return;
-    }
+     try {
+       const base64 = await generateAudio(text);
+       if (!base64) {
+         setError('Ошибка генерации');
+         setStatus('idle');
+         return;
+       }
 
-    if (!audioContextRef.current) {
-      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
-    }
+       if (!audioContextRef.current) {
+         audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
+       }
 
-    try {
-      const bytes = decode(base64);
-      const buffer = await decodeAudioData(bytes, audioContextRef.current);
-      audioBufferRef.current = buffer;
-      playBuffer(buffer, 0);
-    } catch (e) {
-      setError('Ошибка обработки');
-      setStatus('idle');
-    }
-  };
+       const bytes = decode(base64);
+       const buffer = await decodeAudioData(bytes, audioContextRef.current);
+       audioBufferRef.current = buffer;
+       playBuffer(buffer, 0);
+     } catch (e) {
+       setError('Ошибка обработки');
+       setStatus('idle');
+     }
+   };
 
   const playBuffer = (buffer: AudioBuffer, offset: number) => {
     if (!audioContextRef.current) return;

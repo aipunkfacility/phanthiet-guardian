@@ -21,12 +21,15 @@ const SYSTEM_INSTRUCTION = `
 - Всегда отвечайте на русском. Будьте дружелюбны и поэтичны.
 `;
 
-export const getGeminiGuideResponse = async (userMessage: string, history: { role: 'user' | 'model', text: string }[]) => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+export const getGeminiGuideResponse = async (userMessage: string) => {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (!apiKey) throw new Error("GEMINI_API_KEY is not configured");
+  const ai = new GoogleGenAI(apiKey);
   
   try {
     const chat = ai.chats.create({
       model: 'gemini-3-flash-preview',
+      history: [],
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
       },
@@ -41,7 +44,9 @@ export const getGeminiGuideResponse = async (userMessage: string, history: { rol
 };
 
 export const generateAudio = async (text: string): Promise<string | null> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (!apiKey) throw new Error("GEMINI_API_KEY is not configured");
+  const ai = new GoogleGenAI({ apiKey });
   
   try {
     const response = await ai.models.generateContent({
