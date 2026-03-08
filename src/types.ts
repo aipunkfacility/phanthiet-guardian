@@ -31,4 +31,20 @@ export interface ChatMessage {
   timestamp: Date;
 }
 
+export interface PlanContext {
+  mode: 'now' | 'morning' | 'tomorrow';
+  label: string;
+  startH: number;
+  startM: number;
+  desc: string;
+}
+
+export interface ScheduleItem {
+  temple: Temple;
+  arrivalTime: Date;
+  duration: number;
+  departureTime: Date;
+  isSunset: boolean;
+}
+
 

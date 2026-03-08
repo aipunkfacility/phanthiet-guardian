@@ -24,7 +24,7 @@ const SYSTEM_INSTRUCTION = `
 export const getGeminiGuideResponse = async (userMessage: string) => {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   if (!apiKey) throw new Error("GEMINI_API_KEY is not configured");
-  const ai = new GoogleGenAI(apiKey);
+  const ai = new GoogleGenAI({ apiKey });
   
   try {
     const chat = ai.chats.create({

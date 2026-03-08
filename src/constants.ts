@@ -90,5 +90,6 @@ export const TEMPLES: Temple[] = [
 export const APP_CONFIG = {
   TITLE: 'Phan Thiết: Путь Хранителя',
   SUBTITLE: 'Маршрут, оживающий во времени',
+  DESCRIPTION: 'Откройте для себя священные места Фантьета — от древних чамских башен до рыбацких деревень',
   TRIPSTER_URL: 'https://experience.tripster.ru/experience/98200/',
 };
