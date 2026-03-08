@@ -16,13 +16,13 @@
 
 ```bash
 npm run dev           # Dev server (port 3000)
-npm run build        # Production build
-npm run lint         # ESLint check
-npm run lint:fix     # ESLint auto-fix
-npm run format       # Prettier format
-npm run typecheck    # TypeScript check (tsc --noEmit)
-npm run test         # Run tests
-npm run test:watch   # Watch mode
+npm run build         # Production build
+npm run lint          # ESLint check
+npm run lint:fix      # ESLint auto-fix
+npm run format        # Prettier format
+npm run typecheck     # TypeScript check (tsc --noEmit)
+npm run test          # Run tests
+npm run test:watch    # Watch mode
 npm run test -- src/tests/types.test.ts  # Single file
 ```
 
@@ -32,15 +32,20 @@ npm run test -- src/tests/types.test.ts  # Single file
 
 ```
 /src
-  /components    # React components (PascalCase)
-  /services     # API clients (Gemini)
-  /ui           # shadcn/ui components
-  /lib          # Utilities (cn, utils)
-  /tests        # Vitest tests
-  /utils        # Helper functions (db.ts - IndexedDB)
-  types.ts      # Global types (interface, enum)
-  constants.ts  # App data (TEMPLES, APP_CONFIG)
-  index.tsx     # Entry point
+  /components
+    /layout         # Navbar, Header, Footer, FloatingButtons
+    /schedule       # Schedule, Timeline, SunsetIndicator
+    /admin          # AdminLoginDialog, AdminPanel, AdminModeBanner
+    /temple         # TempleCard, TempleCardView, TempleCardEdit, TempleGallery
+  /hooks            # useTempleData, useAdmin, useSchedule, usePhotos, useGemini, useAudio
+  /services         # Gemini API client
+  /utils            # db, scheduleCalculations, audioDecoder, formatters
+  /ui               # shadcn/ui components
+  /tests            # Vitest tests
+  types.ts          # Global types
+  constants.ts      # Temple data (TEMPLES, APP_CONFIG)
+  App.tsx           # Main component
+  index.tsx         # Entry point
 ```
 
 ---
@@ -60,7 +65,6 @@ npm run test -- src/tests/types.test.ts  # Single file
 - **Button** — all buttons
 - **Card** — temple cards in list, info sections
 - **Dialog** — admin login modal
-- **Sheet** — AI chat panel (right sidebar)
 - **Sonner** — toast notifications
 - **Input/Textarea/Label** — form fields
 
@@ -78,6 +82,17 @@ npm run test -- src/tests/types.test.ts  # Single file
 - **Max line** — 100 chars (Prettier)
 - **Avoid** `any`, use `unknown`
 - **Tailwind** — semantic colors, responsive prefixes
+
+---
+
+## Custom Hooks
+
+- **useTempleData** — CRUD операции с храмами, localStorage синхронизация
+- **useAdmin** — админ-аутентификация, sessionStorage
+- **useSchedule** — расписание, построение маршрута
+- **usePhotos** — загрузка/удаление фото в IndexedDB
+- **useGemini** — Gemini API с кешированием и retry
+- **useAudio** — Web Audio API плеер
 
 ---
 
@@ -104,7 +119,7 @@ describe('Temple', () => {
 
 ### Data Storage
 - **Photos**: Store in `public/images/` folder, reference as `/filename.jpg`
-- **Temples**: Always use `constants.ts` (INITIAL_TEMPLES) - no localStorage
+- **Temples**: Always use `constants.ts` (TEMPLES) - no localStorage for temples
 - **User photos**: IndexedDB via `src/utils/db.ts`
 - **Compression**: `browser-image-compression` (500KB max per photo)
 
@@ -132,5 +147,6 @@ describe('Temple', () => {
 
 ## Documentation
 
-- [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md) — Full project documentation (types, API, features, data storage)
+- [CHANGELOG.md](CHANGELOG.md) — Version history
+- [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md) — Full project documentation
 - [BACKLOG.md](BACKLOG.md) — Tasks backlog and feature requests
