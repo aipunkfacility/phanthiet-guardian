@@ -111,6 +111,7 @@ const App: React.FC = () => {
   };
 
   const handleAdminLogin = () => {
+    const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
     if (adminPassword === 'admin123') {
       setIsAdmin(true);
       setAdminDialogOpen(false);
