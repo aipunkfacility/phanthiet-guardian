@@ -1,18 +1,14 @@
 
-import { GoogleGenAI, Modality } from "@google/genai";
+import type { ChatMessage } from '@/types';
 
 const SYSTEM_INSTRUCTION = `
-Вы — "Хранитель историй Фантьета", экспертный гид по ПОЛНОМУ ТУРУ. 
-Ваш маршрут состоит из 9 объектов:
-1. Храм Ван Туй Ту (Кит, 40 мин)
-2. Тюа Ба Дык Сань (Китайская пагода, 40 мин)
-3. Китайский дом собраний (Гуань Юй, 20 мин)
-4. Школа Зук Тхань (Хо Ши Мин, 30 мин)
-5. Водонапорная башня (Символ города, 20 мин)
-6. Башни Пошану (Чамы, 1 ч)
-7. Тхань Тхат Дык Нгиа (Каодай, 20 мин)
-8. Пагода Тхьен Куанг (Будда, 40 мин)
-9. Рыбацкая деревня Муйне (Закат, 1 ч)
+Вы — "Хранитель историй Фантьета", экспертный гид по маршруту. 
+Ваш маршрут состоит из 5 объектов:
+1. Храм Ван Туй Ту (Вьетнамские традиции, Скелет кита, 40 мин)
+2. Храм Гуань Юя (Chua Ong) (Китайские традиции, 30 мин)
+3. Водонапорная башня (История и наследие, 20 мин)
+4. Башни Пошану (Индуизм, Чамы, 60 мин)
+5. Рыбацкая деревня Муйне (Закат, 60 мин)
 
 Ваша задача: помогать пользователю ориентироваться по этому списку. 
 - Подсказывайте, сколько времени заложить на объект.
@@ -21,51 +17,71 @@ const SYSTEM_INSTRUCTION = `
 - Всегда отвечайте на русском. Будьте дружелюбны и поэтичны.
 `;
 
-export const getGeminiGuideResponse = async (userMessage: string) => {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-  if (!apiKey) throw new Error("GEMINI_API_KEY is not configured");
-  const ai = new GoogleGenAI({ apiKey });
-  
+const API_BASE = import.meta.env.PROD 
+  ? '/api'  // Production: использует edge function
+  : '/api/gemini'; // Development: использует vite proxy
+
+export async function getGeminiGuideResponse(
+  message: string,
+  history: ChatMessage[] = []
+): Promise<string> {
   try {
-    const chat = ai.chats.create({
-      model: 'gemini-3-flash-preview',
-      history: [],
-      config: {
-        systemInstruction: SYSTEM_INSTRUCTION,
-      },
+    const response = await fetch(`${API_BASE}/v1beta/models/gemini-3-flash-preview:generateContent`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [
+          ...history.map(m => ({
+            role: m.role,
+            parts: [{ text: m.text }]
+          })),
+          {
+            role: 'user',
+            parts: [{ text: SYSTEM_INSTRUCTION + '\n\nUser question: ' + message }]
+          }
+        ],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 1024,
+        }
+      }),
     });
 
-    const result = await chat.sendMessage({ message: userMessage });
-    return result.text || "Извините, у меня возникли трудности с подключением к духам истории.";
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || 'Не удалось получить ответ';
   } catch (error) {
-    console.error("Gemini API Error:", error);
-    return "Путь к знаниям временно заблокирован. Пожалуйста, попробуйте спросить позже.";
+    console.error('Gemini API error:', error);
+    throw error;
   }
-};
+}
 
-export const generateAudio = async (text: string): Promise<string | null> => {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-  if (!apiKey) throw new Error("GEMINI_API_KEY is not configured");
-  const ai = new GoogleGenAI({ apiKey });
-  
+export async function generateAudio(text: string): Promise<string | null> {
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash-preview-tts",
-      contents: [{ parts: [{ text }] }],
-      config: {
-        responseModalities: [Modality.AUDIO],
-        speechConfig: {
-          voiceConfig: {
-            prebuiltVoiceConfig: { voiceName: 'Kore' },
+    const response = await fetch(`${API_BASE}/v1beta/models/gemini-2.5-flash-preview-tts:generateContent`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: text }] }],
+        generationConfig: {
+          responseModalities: ['AUDIO'],
+          speechConfig: {
+            voiceConfig: {
+              prebuiltVoiceConfig: { voiceName: 'Kore' },
+            },
           },
-        },
-      },
+        }
+      }),
     });
 
-    const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-    return base64Audio || null;
+    const data = await response.json();
+    return data.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data || null;
   } catch (error) {
-    console.error("TTS Error:", error);
+    console.error('Audio generation error:', error);
     return null;
   }
-};
+}
+

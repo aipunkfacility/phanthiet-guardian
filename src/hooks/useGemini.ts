@@ -1,11 +1,15 @@
 import { useState, useCallback, useRef } from 'react';
 import { getGeminiGuideResponse } from '@/services/gemini';
+import { geminiRateLimiter } from '@/utils/rateLimiter';
 
 export interface UseGeminiReturn {
   getResponse: (message: string) => Promise<string>;
   clearCache: () => void;
   isLoading: boolean;
   error: Error | null;
+  rateLimited: boolean;
+  remainingTime: number;
+  clearError: () => void;
 }
 
 const MAX_RETRIES = 3;
@@ -14,17 +18,28 @@ const RETRY_DELAY = 1000;
 export function useGemini(): UseGeminiReturn {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const [rateLimited, setRateLimited] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(0);
   const cacheRef = useRef<Map<string, string>>(new Map());
 
   const getResponse = useCallback(async (message: string): Promise<string> => {
-    const cacheKey = message;
+    const sessionKey = 'gemini-chat';
+    
+    if (!geminiRateLimiter.canProceed(sessionKey)) {
+      const remaining = geminiRateLimiter.getRemainingTime(sessionKey);
+      setRateLimited(true);
+      setRemainingTime(remaining);
+      throw new Error(`Rate limit exceeded. Try again in ${Math.ceil(remaining / 1000)} seconds.`);
+    }
 
+    const cacheKey = message;
     if (cacheRef.current.has(cacheKey)) {
       return cacheRef.current.get(cacheKey)!;
     }
 
     setIsLoading(true);
     setError(null);
+    setRateLimited(false);
 
     let lastError: Error | null = null;
 
@@ -55,11 +70,19 @@ export function useGemini(): UseGeminiReturn {
     cacheRef.current.clear();
   }, []);
 
+  const clearError = useCallback(() => {
+    setError(null);
+    setRateLimited(false);
+  }, []);
+
   return {
     getResponse,
     clearCache,
     isLoading,
     error,
+    rateLimited,
+    remainingTime,
+    clearError,
   };
 }
 
@@ -69,7 +92,7 @@ export interface ChatMessage {
 }
 
 export function useGeminiChat() {
-  const { getResponse, clearCache, isLoading, error } = useGemini();
+  const { getResponse, clearCache, isLoading, error, rateLimited, remainingTime, clearError } = useGemini();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
   const sendMessage = useCallback(async (content: string) => {
@@ -79,6 +102,7 @@ export function useGeminiChat() {
     };
 
     setMessages(prev => [...prev, userMessage]);
+    clearError();
 
     try {
       const response = await getResponse(content);
@@ -91,12 +115,12 @@ export function useGeminiChat() {
     } catch (err) {
       const errorMessage: ChatMessage = {
         role: 'model',
-        text: 'Извините, произошла ошибка. Попробуйте ещё раз.',
+        text: rateLimited ? `Слишком много запросов. Попробуйте через ${Math.ceil(remainingTime / 1000)} секунд.` : 'Извините, произошла ошибка. Попробуйте ещё раз.',
       };
       setMessages(prev => [...prev, errorMessage]);
       throw err;
     }
-  }, [getResponse]);
+  }, [getResponse, clearError, rateLimited, remainingTime]);
 
   const clearMessages = useCallback(() => {
     setMessages([]);
@@ -109,5 +133,7 @@ export function useGeminiChat() {
     clearMessages,
     isLoading,
     error,
+    rateLimited,
+    remainingTime,
   };
 }

@@ -2,6 +2,10 @@ import js from '@eslint/js';
 import reactHooks from 'eslint-plugin-react-hooks';
 import react from 'eslint-plugin-react';
 import tseslint from 'typescript-eslint';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default tseslint.config(
   { ignores: ['dist', 'node_modules', 'coverage'] },
@@ -11,6 +15,9 @@ export default tseslint.config(
     languageOptions: {
       ecmaVersion: 2025,
       sourceType: 'module',
+      parserOptions: {
+        project: path.join(__dirname, 'tsconfig.json'),
+      },
     },
     plugins: {
       'react-hooks': reactHooks,

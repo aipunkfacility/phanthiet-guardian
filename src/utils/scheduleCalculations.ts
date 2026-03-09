@@ -37,10 +37,21 @@ export function calculateSchedule(temples: Temple[]): ScheduleItem[] {
   const startTime = new Date();
   startTime.setHours(context.startH, context.startM, 0, 0);
 
-  return temples.map((temple, index) => {
-    const arrivalTime = new Date(startTime.getTime() + index * 45 * 60000);
-    const duration = 30; // 30 минут на каждый храм
+  let currentTime = new Date(startTime);
+
+  return temples.map((temple) => {
+    let duration = 30;
+    const match = temple.duration?.match(/(\d+)/);
+    if (match) {
+      duration = parseInt(match[1], 10);
+      if (temple.duration.includes('ч')) duration *= 60;
+    }
+
+    const arrivalTime = new Date(currentTime);
     const departureTime = new Date(arrivalTime.getTime() + duration * 60000);
+
+    // Добавляем 15 минут на дорогу до следующего храма
+    currentTime = new Date(departureTime.getTime() + 15 * 60000);
 
     return {
       temple,

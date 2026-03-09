@@ -6,7 +6,7 @@ const GeminiGuide: React.FC = () => {
   const [input, setInput] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const { messages, sendMessage, clearMessages, isLoading } = useGeminiChat();
+  const { messages, sendMessage, clearMessages, isLoading, rateLimited, remainingTime } = useGeminiChat();
 
   // Initial welcome message
   useEffect(() => {
@@ -77,6 +77,11 @@ const GeminiGuide: React.FC = () => {
         </div>
 
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar bg-stone-50">
+          {rateLimited && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-sm text-yellow-800">
+              Слишком много запросов. Попробуйте через {Math.ceil(remainingTime / 1000)} секунд.
+            </div>
+          )}
           {messages.length === 0 && (
             <div className="flex justify-start">
               <div className="max-w-[85%] p-3 rounded-2xl text-sm shadow-sm bg-white text-stone-800 border border-stone-100 rounded-tl-none">

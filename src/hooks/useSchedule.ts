@@ -28,7 +28,7 @@ export function useSchedule(temples: Temple[]) {
     if (temples.length === 0) return;
     
     const origin = 'Phan Thiet, Vietnam';
-    const waypoints = temples.map(temple => temple.name).join('|&#124;');
+    const waypoints = temples.map(temple => temple.name).join('|');
     const destination = temples[temples.length - 1].name;
     
     const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}&waypoints=${encodeURIComponent(waypoints)}&travelmode=walking`;
@@ -46,10 +46,21 @@ export function useSchedule(temples: Temple[]) {
     };
   }, [schedule]);
 
-  const isTempleOpen = useCallback((time: Date) => {
-    // Упрощенная логика: открыто с 8:00 до 18:00
+  const isTempleOpen = useCallback((time: Date, temple: Temple) => {
+    if (!temple.openTime || !temple.closeTime) return true;
+    if (temple.openTime === '00:00' && temple.closeTime === '23:59') return true;
+
     const hour = time.getHours();
-    return hour >= 8 && hour < 18;
+    const minute = time.getMinutes();
+    const totalMins = hour * 60 + minute;
+
+    const [openH, openM] = temple.openTime.split(':').map(Number);
+    const [closeH, closeM] = temple.closeTime.split(':').map(Number);
+
+    const openTotal = openH * 60 + openM;
+    const closeTotal = closeH * 60 + closeM;
+
+    return totalMins >= openTotal && totalMins < closeTotal;
   }, []);
 
   return {

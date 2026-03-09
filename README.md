@@ -3,6 +3,9 @@
 </div>
 
 [![GitHub Repo](https://img.shields.io/badge/GitHub-phanthiet--guardian-blue?style=flat-square&logo=github)](https://github.com/aipunkfacility/phanthiet-guardian)
+[![CI](https://github.com/aipunkfacility/phanthiet-guardian/actions/workflows/ci.yml/badge.svg)](https://github.com/aipunkfacility/phanthiet-guardian/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue.svg)](https://www.typescriptlang.org/)
 
 # Guardian of PHAN THIET
 

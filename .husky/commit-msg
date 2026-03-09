@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Проверка формата коммита (conventional commits)
+commit_msg=$(cat "$1")
+pattern="^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .{1,50}"
+
+if ! echo "$commit_msg" | grep -qE "$pattern"; then
+  echo "❌ Commit message does not follow Conventional Commits format!"
+  echo ""
+  echo "Format: type(scope): description"
+  echo "Types: feat, fix, docs, style, refactor, test, chore, perf, ci, build, revert"
+  echo ""
+  echo "Examples:"
+  echo "  feat: add rate limiting for API"
+  echo "  fix(gemini): handle network timeout"
+  echo "  docs: update README with CI badges"
+  exit 1
+fi

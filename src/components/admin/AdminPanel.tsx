@@ -7,6 +7,7 @@ interface AdminPanelProps {
   open: boolean;
   onClose: () => void;
   onExport: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onImport: (data: any[]) => void;
   onLogout: () => void;
 }
@@ -32,7 +33,7 @@ export function AdminPanel({ open, onClose, onExport, onImport, onLogout }: Admi
         } else {
           alert('Неверный формат данных');
         }
-      } catch (error) {
+      } catch {
         alert('Ошибка чтения файла');
       }
     };

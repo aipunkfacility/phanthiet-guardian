@@ -34,7 +34,7 @@ export function useAudio(): UseAudioReturn {
     if (sourceRef.current) {
       try {
         sourceRef.current.stop();
-      } catch (e) {
+      } catch {
         // Already stopped
       }
       sourceRef.current = null;

@@ -36,7 +36,7 @@ export function TempleGallery({ templeId, userPhotos, onPhotosChange, readOnly }
 
     setIsLoading(true);
     try {
-      for (const file of Array.from(files) as File[]) {
+      for (const file of Array.from(files)) {
         if (userPhotos.length >= MAX_PHOTOS) break;
         
         try {
