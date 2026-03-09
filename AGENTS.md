@@ -6,8 +6,7 @@
 
 ## 🚨 CRITICAL
 
-- **NO** `process.env` in browser code — use `import.meta.env.VITE_GEMINI_API_KEY`
-- **NO** secrets in code — use `.env.local`
+- **NO** secrets in client code — use Vite Proxy (`/api/gemini`)
 - **NO** `any` — use `unknown` or explicit types
 
 ---
@@ -21,9 +20,9 @@ npm run lint          # ESLint check
 npm run lint:fix      # ESLint auto-fix
 npm run format        # Prettier format
 npm run typecheck     # TypeScript check (tsc --noEmit)
-npm run test          # Run tests
-npm run test:watch    # Watch mode
-npm run test -- src/tests/types.test.ts  # Single file
+npm run test          # Run all tests
+npm run test -- --run # Run tests once (no watch)
+npm run test -- src/tests/types.test.ts --run  # Single file
 ```
 
 ---
@@ -91,8 +90,14 @@ npm run test -- src/tests/types.test.ts  # Single file
 - **useAdmin** — админ-аутентификация, sessionStorage
 - **useSchedule** — расписание, построение маршрута
 - **usePhotos** — загрузка/удаление фото в IndexedDB
-- **useGemini** — Gemini API с кешированием и retry
+- **useGemini** — Gemini API с кешированием, retry и rate limiting
 - **useAudio** — Web Audio API плеер
+
+---
+
+## Utilities
+
+- **rateLimiter** — Rate limiting для API запросов (`src/utils/rateLimiter.ts`)
 
 ---
 
