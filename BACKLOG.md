@@ -19,6 +19,7 @@
 
 ## 🟡 Средний приоритет
 
+- [ ] **Production: Backend для Gemini API** — Vite Proxy работает только в dev. Для GitHub Pages нужен Edge Function (Vercel/Cloudflare) или другой backend
 - [ ] **Обработка ошибок изображений** — добавить fallback для изображений в `src/index.tsx`
 - [ ] **Рефакторинг архитектуры** — вынести логику в кастомные хуки (useTempleData, useGemini, useAudio), разделить index.tsx
 - [ ] **Оптимизация производительности** — React.lazy(), оптимизация изображений
