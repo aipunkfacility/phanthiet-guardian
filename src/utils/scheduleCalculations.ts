@@ -1,5 +1,4 @@
-import { PlanContext, ScheduleItem } from '@/types';
-import { Temple } from '@/types';
+import { PlanContext, ScheduleItem, Temple } from '@/types';
 
 export function getPlanContext(): PlanContext {
   const now = new Date();
@@ -39,7 +38,7 @@ export function calculateSchedule(temples: Temple[]): ScheduleItem[] {
 
   let currentTime = new Date(startTime);
 
-  return temples.map((temple) => {
+  return temples.map(temple => {
     let duration = 30;
     const match = temple.duration?.match(/(\d+)/);
     if (match) {
@@ -71,29 +70,4 @@ export function isSunsetTime(time: Date): boolean {
   sunsetEnd.setHours(sunsetHour + 1, 0, 0, 0);
 
   return time >= sunsetStart && time <= sunsetEnd;
-}
-
-export function formatTime(date: Date): string {
-  return date.toLocaleTimeString('ru-RU', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  });
-}
-
-export function formatDate(date: Date): string {
-  return date.toLocaleDateString('ru-RU', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-}
-
-export function formatDuration(minutes: number): string {
-  if (minutes < 60) {
-    return `${minutes} мин`;
-  }
-  const hours = Math.floor(minutes / 60);
-  const remainingMinutes = minutes % 60;
-  return `${hours} ч и ${remainingMinutes} мин`;
 }

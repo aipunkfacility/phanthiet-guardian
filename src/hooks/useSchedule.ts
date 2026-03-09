@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Temple, PlanContext, ScheduleItem } from '@/types';
-import { calculateSchedule, getPlanContext, formatTime } from '@/utils/scheduleCalculations';
+import { calculateSchedule, getPlanContext } from '@/utils/scheduleCalculations';
+import { formatTime, formatDuration } from '@/utils/formatters';
 
 export type { PlanContext, ScheduleItem };
 
@@ -10,10 +11,13 @@ export function useSchedule(temples: Temple[]) {
 
   // Обновляем контекст каждые 5 минут
   useEffect(() => {
-    const interval = setInterval(() => {
-      const newContext = getPlanContext();
-      setContext(newContext);
-    }, 5 * 60 * 1000);
+    const interval = setInterval(
+      () => {
+        const newContext = getPlanContext();
+        setContext(newContext);
+      },
+      5 * 60 * 1000
+    );
 
     return () => clearInterval(interval);
   }, []);
@@ -26,25 +30,28 @@ export function useSchedule(temples: Temple[]) {
 
   const buildGoogleMapsRoute = useCallback(() => {
     if (temples.length === 0) return;
-    
+
     const origin = 'Phan Thiet, Vietnam';
     const waypoints = temples.map(temple => temple.name).join('|');
     const destination = temples[temples.length - 1].name;
-    
+
     const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}&waypoints=${encodeURIComponent(waypoints)}&travelmode=walking`;
-    
+
     window.open(url, '_maps');
   }, [temples]);
 
-  const getEstimatedTime = useCallback((index: number) => {
-    if (index < 0 || index >= schedule.length) return null;
-    const item = schedule[index];
-    return {
-      arrival: formatTime(item.arrivalTime),
-      departure: formatTime(item.departureTime),
-      duration: formatDuration(item.duration),
-    };
-  }, [schedule]);
+  const getEstimatedTime = useCallback(
+    (index: number) => {
+      if (index < 0 || index >= schedule.length) return null;
+      const item = schedule[index];
+      return {
+        arrival: formatTime(item.arrivalTime),
+        departure: formatTime(item.departureTime),
+        duration: formatDuration(item.duration),
+      };
+    },
+    [schedule]
+  );
 
   const isTempleOpen = useCallback((time: Date, temple: Temple) => {
     if (!temple.openTime || !temple.closeTime) return true;
@@ -77,9 +84,12 @@ export function usePlanContext() {
 
   // Обновляем контекст каждые 5 минут
   useEffect(() => {
-    const interval = setInterval(() => {
-      setContext(getPlanContext());
-    }, 5 * 60 * 1000);
+    const interval = setInterval(
+      () => {
+        setContext(getPlanContext());
+      },
+      5 * 60 * 1000
+    );
 
     return () => clearInterval(interval);
   }, []);
@@ -99,13 +109,4 @@ export function useScheduleTimer() {
   }, []);
 
   return currentTime;
-}
-
-function formatDuration(minutes: number): string {
-  if (minutes < 60) {
-    return `${minutes} мин`;
-  }
-  const hours = Math.floor(minutes / 60);
-  const remainingMinutes = minutes % 60;
-  return `${hours} ч и ${remainingMinutes} мин`;
 }

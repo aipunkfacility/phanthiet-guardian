@@ -53,7 +53,7 @@ export function slugify(text: string): string {
 }
 
 export function generateId(): string {
-  return Math.random().toString(36).substr(2, 9);
+  return Math.random().toString(36).slice(2, 11);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
