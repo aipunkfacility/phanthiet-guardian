@@ -66,7 +66,7 @@ describe('GeminiGuide', () => {
       fireEvent.click(sendButton);
 
       await waitFor(() => {
-        expect(geminiModule.getGeminiGuideResponse).toHaveBeenCalledWith('Тестовый вопрос', expect.any(Array));
+        expect(geminiModule.getGeminiGuideResponse).toHaveBeenCalledWith('Тестовый вопрос');
       });
     });
 

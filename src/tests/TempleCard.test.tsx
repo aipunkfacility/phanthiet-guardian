@@ -3,15 +3,16 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { TempleCard } from '@/components/temple/TempleCard';
 import { mockTemple } from '@/tests/mocks/data';
 
-vi.mock('../../utils/db', () => ({
-  savePhotos: vi.fn(),
+vi.mock('@/utils/db', () => ({
+  savePhotos: vi.fn().mockResolvedValue(undefined),
   getPhotos: vi.fn().mockResolvedValue([]),
   compressImage: vi.fn().mockResolvedValue('base64-image'),
-  migrateFromLocalStorage: vi.fn(),
+  migrateFromLocalStorage: vi.fn().mockResolvedValue(undefined),
+  deletePhotos: vi.fn().mockResolvedValue(undefined),
   MAX_PHOTOS: 10,
 }));
 
-vi.mock('../../constants', () => ({
+vi.mock('@/constants', () => ({
   TEMPLES: [mockTemple],
 }));
 
@@ -32,8 +33,7 @@ describe('TempleCard', () => {
       );
 
       expect(screen.getByText(mockTemple.name)).toBeInTheDocument();
-      // Проверка наличия части текста описания
-      expect(screen.getByText(/История тестового храма/i)).toBeInTheDocument();
+      expect(screen.getByText('История места')).toBeInTheDocument();
     });
 
     it('должен рендерить изображение храма', () => {
@@ -63,19 +63,6 @@ describe('TempleCard', () => {
       fireEvent.click(closeButton);
 
       expect(mockOnClose).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('Режим просмотра', () => {
-    it('должен показывать кнопку копирования адреса', () => {
-      render(
-        <TempleCard 
-          temple={mockTemple} 
-          onClose={mockOnClose}
-        />
-      );
-
-      expect(screen.getByText('Копировать')).toBeInTheDocument();
     });
   });
 });

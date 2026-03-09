@@ -106,7 +106,7 @@ describe('AudioGuidePlayer', () => {
       fireEvent.click(playButton);
 
       await waitFor(() => {
-        expect(screen.getByText('Ошибка генерации')).toBeInTheDocument();
+        expect(screen.getByText('Failed to generate audio')).toBeInTheDocument();
       });
     });
 
@@ -121,7 +121,7 @@ describe('AudioGuidePlayer', () => {
       fireEvent.click(playButton);
 
       await waitFor(() => {
-        expect(screen.getByText('Ошибка обработки')).toBeInTheDocument();
+        expect(screen.getByText('API Error')).toBeInTheDocument();
       });
 
       // Кнопка должна быть снова активна

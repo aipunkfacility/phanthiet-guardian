@@ -10,8 +10,48 @@ afterEach(() => {
 });
 
 // Мок для IndexedDB
+class MockIDBRequest {
+  result: unknown = undefined;
+  error: Error | null = null;
+  onsuccess: (() => unknown) | null = null;
+  onerror: (() => unknown) | null = null;
+  
+  constructor(_source: unknown, _transaction: unknown) {}
+  
+  setResult(value: unknown) {
+    this.result = value;
+    if (this.onsuccess) {
+      this.onsuccess();
+    }
+  }
+  
+  setError(error: Error) {
+    this.error = error;
+    if (this.onerror) {
+      this.onerror();
+    }
+  }
+}
+
+class MockIDBDatabase {
+  objectStoreNames = { contains: () => false, length: 0 };
+  close = vi.fn();
+  createObjectStore = vi.fn(() => new MockIDBRequest(null, null));
+}
+
+const createIDBRequest = (result?: unknown): MockIDBRequest => {
+  const request = new MockIDBRequest(null, null);
+  if (result !== undefined) {
+    request.setResult(result);
+  }
+  return request;
+};
+
 const indexedDB = {
-  open: vi.fn(),
+  open: vi.fn((_name: string, _version?: number) => {
+    const db = new MockIDBDatabase();
+    return createIDBRequest(db);
+  }),
   deleteDatabase: vi.fn(),
 };
 
@@ -21,10 +61,24 @@ Object.defineProperty(window, 'indexedDB', {
 });
 
 // Мок для AudioContext
+class MockAudioBuffer {
+  duration = 1;
+  length = 24000;
+  numberOfChannels = 1;
+  sampleRate = 24000;
+  channelData = [new Float32Array(24000)];
+  
+  getChannelData = (channel: number) => this.channelData[channel] || new Float32Array(24000);
+}
+
 class MockAudioContext {
   sampleRate = 24000;
   currentTime = 0;
   state = 'running';
+  
+  decodeAudioData = vi.fn(async (_audioData: ArrayBuffer) => {
+    return new MockAudioBuffer();
+  });
   
   createBufferSource = vi.fn(() => ({
     buffer: null,
@@ -34,7 +88,7 @@ class MockAudioContext {
     onended: null,
   }));
   
-  createBuffer = vi.fn((channels, length, sampleRate) => ({
+  createBuffer = vi.fn((channels: number, length: number, sampleRate: number) => ({
     getChannelData: vi.fn(() => new Float32Array(length)),
     length,
     sampleRate,
